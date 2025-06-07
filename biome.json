@@ -1,0 +1,63 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": [
+			".next",
+			"dist",
+			".turbo",
+			"dev-dist",
+			".zed",
+			".vscode",
+			"routeTree.gen.ts",
+			"src-tauri",
+			".nuxt",
+			"wrangler.json",
+			"worker-configuration.d.ts",
+			"node_modules",
+			"apps/web/node_modules",
+			"apps/api/node_modules",
+			"apps/web/.next",
+			"apps/api/.next",
+			"apps/api/.wrangler",
+			"packages/types/node_modules",
+			"packages/types/dist"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"useExhaustiveDependencies": "info",
+				"noUnusedImports": "error"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"functions": ["clsx", "cva", "cn"]
+					}
+				}
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	}
+}

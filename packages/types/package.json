@@ -1,0 +1,22 @@
+{
+	"name": "@agents-arena/types",
+	"version": "0.0.1",
+	"private": true,
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch --onSuccess \"echo 'Types package built successfully'\"",
+		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+		"lint": "biome check .",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"tsup": "^8.5.0",
+		"typescript": "^5.3.3"
+	},
+	"dependencies": {
+		"zod": "^3.25.42"
+	}
+}
