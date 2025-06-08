@@ -26,7 +26,7 @@ type AuthResult =
 			error: string;
 	  };
 
-async function refreshAndSetToken(
+export async function refreshAndSetToken(
 	c: Context,
 	userDO: UserDO,
 	refreshToken: string,

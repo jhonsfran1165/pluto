@@ -7,6 +7,7 @@ import {
 	type FeedState,
 	type Post,
 } from "@agents-arena/types";
+import { getAgentDO, } from "~/utils/do";
 import { Identifier } from "../utils/identifier";
 
 // for now this is used to broadcast events in realtime but could be used to send alerts or
@@ -36,7 +37,6 @@ export class FeedAgent extends Agent<
 	}
 
 	async likePost(data: { postId: string; likedBy: string }) {
-		// TODO: validate data
 		const post = this.state.posts[data.postId];
 		if (!post) return;
 
@@ -49,6 +49,18 @@ export class FeedAgent extends Agent<
 		const posts = this.state.posts;
 		posts[data.postId] = post;
 
+		// notify the agent that it has been liked
+		// just to make sure we notify the agent
+		if (post.isAgent && post.authorId.startsWith("agt_")) {
+			// find the agent in the users profile first
+			const agent = getAgentDO(post.authorId);
+
+			// this can take a while lets do it in the background
+			this.ctx.waitUntil(
+				agent.addLikedPost(data.postId),
+			);
+		}
+
 		// set the post to the new state
 		this.setState({
 			...this.state,
@@ -56,8 +68,6 @@ export class FeedAgent extends Agent<
 		});
 
 		this.broadCastPostChanges();
-
-		// TODO: notify the agent that it liked the post in the background
 	}
 
 	addPost(data: CreatePost) {
@@ -82,6 +92,8 @@ export class FeedAgent extends Agent<
 		if (last100Posts.length === 100) {
 			last100Posts.shift();
 		}
+
+		// add the new post to the list
 		last100Posts.push(newPost);
 
 		// sort by timestamp first the recent ones

@@ -15,11 +15,18 @@ import {
 	type PersonalityType,
 	postingFrequencies,
 } from "@agents-arena/types";
-import { Edit3 } from "lucide-react";
+import { Edit3, Loader2 } from "lucide-react";
 import { useState } from "react";
 
-interface CreateAgentFormProps {
-	onSubmit: (agentData: {
+	interface CreateAgentFormProps {
+		onCreate: (agentData: {
+			name: string;
+			personality: PersonalityType;
+			frequency: FrequencyType;
+			prompt: string;
+		}) => void;
+	onUpdate?: (agentData: {
+		id: string;
 		name: string;
 		personality: PersonalityType;
 		frequency: FrequencyType;
@@ -27,20 +34,28 @@ interface CreateAgentFormProps {
 	}) => void;
 	onDelete?: () => void;
 	initialAgent?: {
+		id?: string;
 		name: string;
 		personality: PersonalityType;
 		frequency: FrequencyType;
 		prompt: string;
 	};
+	isCreating: boolean;
+	isUpdating: boolean;
+	isDeleting: boolean;
 }
 
 const personalities = Object.values(PersonalitySchema.enum);
 const frequencies = postingFrequencies;
 
 export function CreateAgentForm({
-	onSubmit,
+	onCreate,
+	onUpdate,
 	onDelete,
 	initialAgent,
+	isCreating,
+	isUpdating,
+	isDeleting,
 }: CreateAgentFormProps) {
 	const [newAgentName, setNewAgentName] = useState(initialAgent?.name || "");
 	const [newAgentFrequency, setNewAgentFrequency] = useState<FrequencyType>(
@@ -52,12 +67,22 @@ export function CreateAgentForm({
 	const [customPrompt, setCustomPrompt] = useState(initialAgent?.prompt || "");
 
 	const handleSubmit = () => {
-		onSubmit({
+		if (initialAgent?.id && onUpdate) {
+			onUpdate({
+				id: initialAgent.id,
 			name: newAgentName,
 			personality: personality,
-			frequency: newAgentFrequency,
-			prompt: customPrompt,
-		});
+				frequency: newAgentFrequency,
+				prompt: customPrompt,
+			});
+		} else {
+			onCreate({
+				name: newAgentName,
+				personality: personality,
+				frequency: newAgentFrequency,
+				prompt: customPrompt,
+			});
+		}
 	};
 
 	return (
@@ -168,13 +193,15 @@ export function CreateAgentForm({
 
 			<div className="flex items-center justify-between gap-2">
 				{onDelete && (
-					<Button onClick={onDelete} variant="destructive">
+					<Button onClick={onDelete} variant="destructive" disabled={isDeleting}>
 						Delete Agent
+						{isDeleting && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
 					</Button>
 				)}
 
-				<Button onClick={handleSubmit} disabled={!newAgentName.trim()}>
-					{initialAgent ? "Update Agent" : "Create Agent"}
+				<Button onClick={handleSubmit} disabled={!newAgentName.trim() || isCreating || isUpdating}>
+					{initialAgent?.id ? "Update Agent" : "Create Agent"}
+					{isCreating || isUpdating && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
 				</Button>
 			</div>
 		</div>

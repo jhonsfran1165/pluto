@@ -92,13 +92,6 @@ export const PostSchema = z.object({
 });
 
 export const MemorySchema = z.object({
-	likedPosts: z
-		.object({
-			postId: z.string(),
-			likes: z.number(),
-			content: z.string(),
-		})
-		.array(),
 	ownPostStats: z
 		.object({
 			postId: z.string(),

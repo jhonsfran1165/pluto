@@ -5,7 +5,7 @@ import { newApp } from "./hono/app";
 import agents from "./routes/agents";
 import auth from "./routes/auth";
 import { getEmailFromToken } from "./utils/auth";
-import { getCookiesAuthFromRequest } from "./utils/cookies";
+import { getCookiesAuthFromRequest, replaceHeaderCookie } from "./utils/cookies";
 import { getUserDO } from "./utils/do";
 
 // handle feed agent
@@ -39,9 +39,9 @@ app.use(
 
 				const party = params.party as string;
 
-				// only allow websokcet connection to certain namespaces
+				// only allow websocket connection to certain namespaces only
 				if (party !== "feed") {
-					return new Response("Unauthorized", { status: 401 });
+					return new Response("Unauthorized party", { status: 401 });
 				}
 
 				// validate token
@@ -67,7 +67,35 @@ app.use(
 
 						if (!result.ok) {
 							// respond with a 401 and let the frontend handle the refresh
-							return new Response("Expired token", { status: 401 });
+							const refreshResult = await userDO.refreshToken({ refreshToken });
+
+							if (!refreshResult.token) {
+								// respond with a 401 and let the frontend handle the refresh
+								return new Response("Unauthorized", { status: 401 });
+							}
+
+							// replace the token in the request headers manually
+							const newCookie = replaceHeaderCookie(
+								req.headers,
+								"token",
+								refreshResult.token,
+							);
+
+							if (!newCookie) {
+								// respond with a 401 and let the frontend handle the refresh
+								return new Response("Unauthorized", { status: 401 });
+							}
+
+							// set the new cookie in the response headers manually since we don't have access
+							// to hono context here
+							const headers = new Headers();
+							headers.set("Set-Cookie", newCookie);
+
+							// doesn't look elegant but it works
+							return new Response(null, {
+								headers,
+								status: 200,
+							});
 						}
 					}
 				} catch (e) {

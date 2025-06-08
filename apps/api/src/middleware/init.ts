@@ -22,8 +22,6 @@ export function init(): MiddlewareHandler<HonoEnv> {
 			}),
 		});
 
-		// TODO: add more interesting stats of the request
-
 		await next();
 	};
 }

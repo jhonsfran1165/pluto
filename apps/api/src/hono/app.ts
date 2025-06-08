@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type { Context as GenericContext } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -13,7 +14,7 @@ export function newApp() {
 	app.use(
 		"*",
 		cors({
-			origin: "http://localhost:3001",
+			origin: env.FRONTEND_URL,
 			allowHeaders: ["Content-Type", "Authorization"],
 			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 			exposeHeaders: ["*"],

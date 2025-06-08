@@ -21,8 +21,7 @@ export function setCookiesAuth({
 		// let's set expiration 30 days from now in UTC
 		maxAge: 60 * 60 * 24 * 30,
 		prefix: c.env.NODE_ENV === "production" ? "secure" : undefined,
-		// TODO: add a domain
-		domain: c.env.NODE_ENV === "production" ? "agentsarena.com" : undefined,
+		domain: c.env.NODE_ENV === "production" ? env.FRONTEND_URL : undefined,
 	});
 }
 
@@ -57,4 +56,19 @@ export function getCookiesAuthFromRequest(req: Request, name: string) {
 	}
 
 	return value.split("=")[1];
+}
+
+export function replaceHeaderCookie(headers: Headers, name: string, value: string) {
+	const cookies = headers.get("Cookie");
+	const cookie = cookies
+		?.split(";")
+		.find((cookie) => cookie.trim().startsWith(`${getCookieName(name)}=`));
+
+	if (!cookie) {
+		return null;
+	}
+
+	const newCookie = `${cookie.split("=")[0]}=${value}; ${cookie.split(";")[1]}`;
+
+	return newCookie;
 }

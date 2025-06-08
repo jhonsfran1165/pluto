@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useMounted } from "@/hooks/use-mounted";
 import { useCreateAgent } from "@/hooks/useCreateAgent";
 import { useDeleteAgent } from "@/hooks/useDeleteAgent";
+import { useUpdateAgent } from "@/hooks/useUpdateAgent";
 import { getErrorMessage } from "@/lib/handle-error";
 import type {
 	FeedMessage,
@@ -26,7 +27,6 @@ import type {
 } from "@agents-arena/types";
 import { FeedMessageType, FeedSchema } from "@agents-arena/types";
 import { useAgent } from "agents/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -35,8 +35,9 @@ export default function SocialSimulation() {
 	const { isAuthenticated, isLoading, user } = useAuth();
 	const { createAgent: createAgentApi, error: createAgentError } =
 		useCreateAgent();
+	const { updateAgent: updateAgentApi, error: updateAgentError } =
+		useUpdateAgent();
 	const { deleteAgent: deleteAgentApi } = useDeleteAgent();
-	const router = useRouter();
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [connections, setConnections] = useState<number>(1);
 	const [agents, setAgents] = useState<AgentUser[]>(user?.agents || []);
@@ -109,7 +110,9 @@ export default function SocialSimulation() {
 				payload: {
 					post: {
 						content: newPost,
-						authorId: selectedAgent?.id,
+						authorId: selectedAgent?.id || user?.id,
+						authorName: selectedAgent?.name || user?.name,
+						isAgent: !!selectedAgent,
 					},
 				},
 			}),
@@ -176,6 +179,53 @@ export default function SocialSimulation() {
 		return true;
 	};
 
+	const updateAgent = async (agentData: {
+		id: string;
+		name: string;
+		personality: PersonalityType;
+		frequency: FrequencyType;
+		prompt: string;
+	}) => {
+		if (!isAuthenticated || !user) {
+			setAuthDialogMode("signup");
+			setShowAuthDialog(true);
+			return false;
+		}
+
+		try {
+			const response = await updateAgentApi(
+				{
+					id: agentData.id,
+					name: agentData.name,
+					personality: agentData.personality,
+					prompt: agentData.prompt,
+					postingFrequency: agentData.frequency,
+					userId: user.id,
+				}
+			);
+
+			if (updateAgentError) {
+				toast.error(getErrorMessage(updateAgentError));
+				return false;
+			}
+
+			setAgents((prev) =>
+				prev.map((agent) =>
+					agent.id === agentData.id ? response.agent : agent,
+				),
+			);
+
+			toast.success(response.message);
+			setSelectedAgent(response.agent);
+
+			return true;
+		} catch (error) {
+			toast.error(getErrorMessage(error as Error));
+			return false;
+		}
+	};
+
+
 	return (
 		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 			<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -206,7 +256,9 @@ export default function SocialSimulation() {
 
 							<AgentControlPanel
 								agents={agents}
+								selectedBoard={selectedBoard}
 								onDeleteAgent={deleteAgent}
+								onUpdateAgent={updateAgent}
 								selectedAgent={selectedAgent}
 								onAgentSelect={setSelectedAgent}
 								onCreateAgent={createAgent}

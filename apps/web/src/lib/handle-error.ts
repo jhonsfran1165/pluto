@@ -4,8 +4,6 @@ import { fromZodIssue } from "zod-validation-error";
 export function getErrorMessage(err: unknown) {
 	const unknownError = "Something went wrong, please try again later.";
 
-	console.log("err", err);
-
 	if (err instanceof z.ZodError) {
 		const errors = err.issues.map((issue) => {
 			return fromZodIssue(issue).toString();

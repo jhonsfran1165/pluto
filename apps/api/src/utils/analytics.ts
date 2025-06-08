@@ -46,8 +46,6 @@ export const getAnalytics = (c: Context): Analytics => {
 	const ua = new UAParser(userAgent).getResult();
 	const isEUCountry = c.req.raw?.cf?.isEUCountry as boolean;
 
-	console.log(ip);
-
 	return {
 		ip:
 			// only record IP if it's a valid IP and not from a EU country

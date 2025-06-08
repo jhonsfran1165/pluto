@@ -6,7 +6,7 @@ import z from "zod";
 import { evalModel, model } from "~/utils/ai";
 import { getFeedDO } from "~/utils/do";
 import { Identifier } from "~/utils/identifier";
-import { getLatestNews } from "~/utils/tools";
+import { getLatestNews, getWeatherTool } from "~/utils/tools";
 
 // for now this is used to broadcast events in realtime but could be used to send alerts or
 // notifications
@@ -22,7 +22,6 @@ export class AgentDO extends Agent<
 		name: "",
 		personality: "sarcastic",
 		memory: {
-			likedPosts: [],
 			ownPostStats: [],
 			trendingPatterns: [],
 		},
@@ -47,11 +46,32 @@ export class AgentDO extends Agent<
 		await this.schedule(this.state.postingFrequency.cron, "addPost");
 	}
 
-	async createMemory() {
+	async update(state: AgentState) {
+		this.setState({
+			...this.state,
+			...state,
+		});
+
+		// delete old scheduled
+		const tasks = this.getSchedules();
+
+		console.log("tasks", tasks, this.state.id);
+
+		for (const task of tasks) {
+			this.cancelSchedule(task.id);
+		}
+
+		// schedule the task to add a post given the frequency
+		await this.schedule(this.state.postingFrequency.cron, "addPost");
+	}
+
+	createMemory() {
 		// given the old post stats, create a memory of the posts that are similar to the old posts
 		const memory = this.state.memory?.ownPostStats
-			.map((post) => post.content)
+			.map((post) => `${post.content} (liked by ${post.likes} people)`)
+			.slice(0, 5) // get the last 5 posts
 			.join("\n");
+
 		return memory;
 	}
 
@@ -64,19 +84,37 @@ export class AgentDO extends Agent<
 			Adopt the following personality for your posts: ${this.state.personality}. Ensure your tone and style reflect this personality consistently.
 			Create engaging, human-like posts that resonate with the audience. Use a conversational tone as if you are an individual sharing on social media.
 			Incorporate links and emojis where appropriate to enhance engagement and visual appeal.
-			Keep posts concise, with a maximum length of 280 characters, adhering to typical social media constraints.
+			Keep posts concise, with a maximum length of 280 characters, adhering to typical social media constraints. Don't use hashtags.
 
-			Ensure variety in your content. Avoid repeating topics or ideas already covered in previous posts. Here are the posts you've already shared for reference:
+			Ensure variety in your content. Avoid repeating topics or ideas already covered in previous posts unless they are liked by a lot of people. Here are the posts you've already shared for reference:
 			${this.createMemory()}
 
+			When talking about news, make sure you are not talking about something that is already in the memory. If so pick a different news.
+
 			Response Format:
-			Respond with the post in Markdown format, ready for direct sharing on social media platforms.
+			Respond with the post in text format, ready for direct sharing on social media platforms.
 
 			Objective:
 			Craft a single, unique post that captures attention, aligns with the ${this.state.feed} theme, reflects the specified personality, and encourages interaction from followers.
 		`;
 
 		return systemPrompt;
+	}
+
+	async addLikedPost(postId: string) {
+		// check if the durable object is still alive
+		if (!this.ctx.storage.get("id") || !this.state.id.startsWith("agt_")) {
+			console.log("agent is dead, skipping liked post...", postId);
+			return;
+		}
+
+		// add the post to the agent memory
+		const stats = this.state.memory?.ownPostStats || [];
+		const post = stats.find((post) => post.postId === postId);
+
+		if (post) {
+			post.likes++;
+		}
 	}
 
 	async improvePost(post: string) {
@@ -114,9 +152,9 @@ export class AgentDO extends Agent<
 					${qualityMetrics.allucination < 7 ? "- Improve and avoid allucination" : ""}
 					Original post: ${post}
 
-					Respond with the post in markdown format. You can user links and emojis if you need to.
+					Respond with the post in text format. You can user links and emojis if you need to.
 					Respond as if you are a human posting on social media.
-					The maximum length of the post is 280 characters.
+					The maximum length of the post is 280 characters. Don't use hashtags.
 				`,
 				onStepFinish: ({ usage }) => {
 					// TODO: add usage to the agent
@@ -130,7 +168,7 @@ export class AgentDO extends Agent<
 	}
 
 	async generatePost() {
-		const { text: post, steps } = await generateText({
+		const { text: post } = await generateText({
 			system: this.systemPrompt(),
 			model,
 			prompt: this.state.prompt,
@@ -138,14 +176,13 @@ export class AgentDO extends Agent<
 			temperature: 0.5,
 			tools: {
 				getLatestNews: getLatestNews,
+				getWeather: getWeatherTool,
 			},
-			// TODO: add output schema
+			// TODO: add usage to the agent
 			onStepFinish: ({ usage }) => {
 				console.log("usage", usage);
 			},
 		});
-
-		console.log("steps", steps);
 
 		return post;
 	}
@@ -156,6 +193,8 @@ export class AgentDO extends Agent<
 		const id = Identifier.create("post");
 
 		const post = await this.generatePost();
+
+		// TODO: activate this only for pro users
 		const { post: improvedPost } = await this.improvePost(post);
 
 		// post in the feed
@@ -175,7 +214,6 @@ export class AgentDO extends Agent<
 			memory: {
 				...this.state.memory,
 				ownPostStats: stats,
-				likedPosts: this.state.memory?.likedPosts || [],
 				trendingPatterns: this.state.memory?.trendingPatterns || [],
 			},
 		});

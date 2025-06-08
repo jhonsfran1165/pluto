@@ -11,7 +11,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import type { FrequencyType, PersonalityType } from "@agents-arena/types";
+import type { FeedType, FrequencyType, PersonalityType } from "@agents-arena/types";
 import { AgentSchema } from "@agents-arena/types";
 import { Bot, Plus } from "lucide-react";
 import { useState } from "react";
@@ -35,6 +35,14 @@ interface AgentControlPanelProps {
 		prompt: string;
 	}) => Promise<boolean>;
 	onDeleteAgent: (agentId: string) => Promise<void>;
+	selectedBoard: FeedType;
+	onUpdateAgent: (agentData: {
+		id: string;
+		name: string;
+		personality: PersonalityType;
+		frequency: FrequencyType;
+		prompt: string;
+	}) => Promise<boolean>;
 }
 
 export function AgentControlPanel({
@@ -43,8 +51,13 @@ export function AgentControlPanel({
 	onAgentSelect,
 	onCreateAgent,
 	onDeleteAgent,
+	selectedBoard,
+	onUpdateAgent,
 }: AgentControlPanelProps) {
 	const [showCreateAgent, setShowCreateAgent] = useState(false);
+	const [isUpdating, setIsUpdating] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [isCreating, setIsCreating] = useState(false);
 
 	const handleCreateAgent = async (agentData: {
 		name: string;
@@ -52,17 +65,35 @@ export function AgentControlPanel({
 		frequency: FrequencyType;
 		prompt: string;
 	}) => {
+		setIsCreating(true);
 		const success = await onCreateAgent(agentData);
+		setIsCreating(false);
+		if (success) {
+			setShowCreateAgent(false);
+		}
+	};
 
+	const handleUpdateAgent = async (agentData: {
+		id: string;
+		name: string;
+		personality: PersonalityType;
+		frequency: FrequencyType;
+		prompt: string;
+	}) => {
+		setIsUpdating(true);
+		const success = await onUpdateAgent(agentData);
+		setIsUpdating(false);
 		if (success) {
 			setShowCreateAgent(false);
 		}
 	};
 
 	const handleDeleteAgent = async (agentId: string) => {
+		setIsDeleting(true);
 		await onDeleteAgent(agentId);
 		setShowCreateAgent(false);
 		onAgentSelect(undefined as unknown as AgentUser);
+		setIsDeleting(false);
 	};
 
 	return (
@@ -93,7 +124,8 @@ export function AgentControlPanel({
 								</DialogTitle>
 							</DialogHeader>
 							<CreateAgentForm
-								onSubmit={handleCreateAgent}
+								onCreate={handleCreateAgent}
+								onUpdate={selectedAgent ? handleUpdateAgent : undefined}
 								initialAgent={
 									selectedAgent
 										? {
@@ -101,6 +133,7 @@ export function AgentControlPanel({
 												personality: selectedAgent.personality,
 												frequency: selectedAgent.postingFrequency,
 												prompt: selectedAgent.prompt,
+												id: selectedAgent.id,
 											}
 										: undefined
 								}
@@ -111,6 +144,9 @@ export function AgentControlPanel({
 											}
 										: undefined
 								}
+								isCreating={isCreating}
+								isUpdating={isUpdating}
+								isDeleting={isDeleting}
 							/>
 						</DialogContent>
 					</Dialog>
@@ -128,7 +164,8 @@ export function AgentControlPanel({
 						</span>
 					</div>
 					<div className="space-y-2">
-						{agents.map((agent) => (
+						{/* filter agents by feed */}
+						{agents.filter((agent) => agent.feed === selectedBoard).map((agent) => (
 							<button
 								key={agent.id}
 								type="button"
@@ -141,10 +178,10 @@ export function AgentControlPanel({
 								}}
 							>
 								<div className="flex min-w-0 flex-col">
-									<span className="truncate font-medium text-slate-900 text-sm dark:text-slate-100">
-										{agent.name}
+									<span className="truncate px-2 font-medium text-lg text-slate-900 dark:text-slate-100">
+										{agent.name.toUpperCase()}
 									</span>
-									<div className="mt-1 flex items-center gap-2">
+									<div className="flex items-center gap-1 px-1 py-1">
 										<Badge
 											variant="outline"
 											className="border-slate-200 bg-slate-100 px-1.5 py-0 font-normal text-[10px] text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"

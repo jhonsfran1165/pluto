@@ -11,6 +11,7 @@ const env = createEnv({
 			.enum(["development", "test", "production"])
 			.default("development"),
 		JWT_SECRET: z.string(),
+		FRONTEND_URL: z.string().url().default("http://localhost:3001"),
 		OPENROUTER_API_KEY: z.string(),
 		VERSION: z.string().default("unknown"),
 		FEED: z.custom<AgentNamespace<FeedAgent>>((ns) => typeof ns === "object"),

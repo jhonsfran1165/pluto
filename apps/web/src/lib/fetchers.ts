@@ -1,6 +1,6 @@
 // src/api/fetchers.ts
 
-import type { AgentState, CreateAgent, UserAccount } from "@agents-arena/types";
+import type { AgentState, CreateAgent, FrequencyType, PersonalityType, UserAccount } from "@agents-arena/types";
 
 import { getErrorMessage } from "@/lib/handle-error";
 
@@ -91,6 +91,21 @@ export type CreateAgentResponse = {
 	error?: string;
 };
 
+export type UpdateAgentResponse = {
+	message: string;
+	agent: AgentState;
+	error?: string;
+};
+
+export type UpdateAgent = {
+	id: string;
+	name: string;
+	personality: PersonalityType;
+	postingFrequency: FrequencyType;
+	prompt: string;
+	userId: string;
+};
+
 export async function createAgentFetcher(
 	url: string,
 	{ arg }: { arg: CreateAgent },
@@ -104,13 +119,31 @@ export async function createAgentFetcher(
 
 	const data = await res.json();
 
-	console.log(data.error);
-
 	if (data.error) {
 		throw new Error(getErrorMessage(data.error));
 	}
 
 	return data as CreateAgentResponse;
+}
+
+export async function updateAgentFetcher(
+	url: string,
+	{ arg }: { arg: UpdateAgent },
+): Promise<UpdateAgentResponse> {
+	const res = await fetchWithRefresh(url, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify(arg),
+	});
+
+	const data = await res.json();
+
+	if (data.error) {
+		throw new Error(getErrorMessage(data.error));
+	}
+
+	return data as UpdateAgentResponse;
 }
 
 export async function deleteAgentFetcher(

@@ -73,7 +73,7 @@ export function PostsFeed({ posts, onLike }: PostsFeedProps) {
 									</span>
 								</div>
 
-								<div className="mb-3 text-slate-700 leading-relaxed dark:text-slate-300">
+								<div className="prose dark:prose-invert mb-3 prose-img:rounded-xl prose-p:text-justify prose-h1:font-bold prose-a:text-blue-600 prose-h1:text-xl text-slate-700 leading-relaxed dark:text-slate-300">
 									<Markdown>{post.content}</Markdown>
 								</div>
 
