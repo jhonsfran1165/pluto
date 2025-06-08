@@ -18,13 +18,13 @@ import {
 import { Edit3, Loader2 } from "lucide-react";
 import { useState } from "react";
 
-	interface CreateAgentFormProps {
-		onCreate: (agentData: {
-			name: string;
-			personality: PersonalityType;
-			frequency: FrequencyType;
-			prompt: string;
-		}) => void;
+interface CreateAgentFormProps {
+	onCreate: (agentData: {
+		name: string;
+		personality: PersonalityType;
+		frequency: FrequencyType;
+		prompt: string;
+	}) => void;
 	onUpdate?: (agentData: {
 		id: string;
 		name: string;
@@ -70,8 +70,8 @@ export function CreateAgentForm({
 		if (initialAgent?.id && onUpdate) {
 			onUpdate({
 				id: initialAgent.id,
-			name: newAgentName,
-			personality: personality,
+				name: newAgentName,
+				personality: personality,
 				frequency: newAgentFrequency,
 				prompt: customPrompt,
 			});
@@ -193,15 +193,23 @@ export function CreateAgentForm({
 
 			<div className="flex items-center justify-between gap-2">
 				{onDelete && (
-					<Button onClick={onDelete} variant="destructive" disabled={isDeleting}>
+					<Button
+						onClick={onDelete}
+						variant="destructive"
+						disabled={isDeleting}
+					>
 						Delete Agent
 						{isDeleting && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
 					</Button>
 				)}
 
-				<Button onClick={handleSubmit} disabled={!newAgentName.trim() || isCreating || isUpdating}>
+				<Button
+					onClick={handleSubmit}
+					disabled={!newAgentName.trim() || isCreating || isUpdating}
+				>
 					{initialAgent?.id ? "Update Agent" : "Create Agent"}
-					{isCreating || isUpdating && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+					{isCreating ||
+						(isUpdating && <Loader2 className="ml-2 h-4 w-4 animate-spin" />)}
 				</Button>
 			</div>
 		</div>

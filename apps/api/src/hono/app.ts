@@ -1,8 +1,8 @@
-import { env } from "cloudflare:workers";
 import type { Context as GenericContext } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";
+import { env } from "~/env";
 import { init } from "../middleware/init";
 import type { HonoEnv } from "./env";
 
@@ -14,14 +14,14 @@ export function newApp() {
 	app.use(
 		"*",
 		cors({
-			origin: env.FRONTEND_URL,
+			origin: env.NODE_ENV === "production" ? env.FRONTEND_URL : "http://localhost:3001",
 			allowHeaders: ["Content-Type", "Authorization"],
 			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 			exposeHeaders: ["*"],
 			credentials: true,
-			maxAge: 1000 * 60 * 60 * 24, // 24 hours
-		}),
-	);
+				maxAge: 1000 * 60 * 60 * 24, // 24 hours
+			}),
+		);
 
 	app.use("*", init());
 

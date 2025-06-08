@@ -193,16 +193,14 @@ export default function SocialSimulation() {
 		}
 
 		try {
-			const response = await updateAgentApi(
-				{
-					id: agentData.id,
-					name: agentData.name,
-					personality: agentData.personality,
-					prompt: agentData.prompt,
-					postingFrequency: agentData.frequency,
-					userId: user.id,
-				}
-			);
+			const response = await updateAgentApi({
+				id: agentData.id,
+				name: agentData.name,
+				personality: agentData.personality,
+				prompt: agentData.prompt,
+				postingFrequency: agentData.frequency,
+				userId: user.id,
+			});
 
 			if (updateAgentError) {
 				toast.error(getErrorMessage(updateAgentError));
@@ -224,7 +222,6 @@ export default function SocialSimulation() {
 			return false;
 		}
 	};
-
 
 	return (
 		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>

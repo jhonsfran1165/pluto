@@ -1,4 +1,8 @@
-import { type UpdateAgent, type UpdateAgentResponse, updateAgentFetcher } from "@/lib/fetchers";
+import {
+	type UpdateAgent,
+	type UpdateAgentResponse,
+	updateAgentFetcher,
+} from "@/lib/fetchers";
 import useSWRMutation from "swr/mutation";
 
 export function useUpdateAgent() {

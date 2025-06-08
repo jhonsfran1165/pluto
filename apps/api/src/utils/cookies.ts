@@ -1,6 +1,6 @@
-import { env } from "cloudflare:workers";
 import type { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
+import { env } from "~/env";
 
 export function setCookiesAuth({
 	c,
@@ -58,7 +58,11 @@ export function getCookiesAuthFromRequest(req: Request, name: string) {
 	return value.split("=")[1];
 }
 
-export function replaceHeaderCookie(headers: Headers, name: string, value: string) {
+export function replaceHeaderCookie(
+	headers: Headers,
+	name: string,
+	value: string,
+) {
 	const cookies = headers.get("Cookie");
 	const cookie = cookies
 		?.split(";")

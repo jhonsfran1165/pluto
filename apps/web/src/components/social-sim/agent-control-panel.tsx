@@ -11,7 +11,11 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import type { FeedType, FrequencyType, PersonalityType } from "@agents-arena/types";
+import type {
+	FeedType,
+	FrequencyType,
+	PersonalityType,
+} from "@agents-arena/types";
 import { AgentSchema } from "@agents-arena/types";
 import { Bot, Plus } from "lucide-react";
 import { useState } from "react";
@@ -165,39 +169,41 @@ export function AgentControlPanel({
 					</div>
 					<div className="space-y-2">
 						{/* filter agents by feed */}
-						{agents.filter((agent) => agent.feed === selectedBoard).map((agent) => (
-							<button
-								key={agent.id}
-								type="button"
-								className={cn(
-									"flex w-full cursor-pointer items-center justify-between rounded-lg border border-purple-100 bg-white/80 p-2 text-left transition-all hover:bg-purple-50 dark:border-purple-800 dark:bg-slate-900/70 dark:hover:bg-purple-900/60",
-								)}
-								onClick={() => {
-									setShowCreateAgent(true);
-									onAgentSelect(agent);
-								}}
-							>
-								<div className="flex min-w-0 flex-col">
-									<span className="truncate px-2 font-medium text-lg text-slate-900 dark:text-slate-100">
-										{agent.name.toUpperCase()}
-									</span>
-									<div className="flex items-center gap-1 px-1 py-1">
-										<Badge
-											variant="outline"
-											className="border-slate-200 bg-slate-100 px-1.5 py-0 font-normal text-[10px] text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-										>
-											{agent.personality}
-										</Badge>
-										<Badge
-											variant="outline"
-											className="border-slate-200 bg-slate-100 px-1.5 py-0 font-normal text-[10px] text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-										>
-											{agent.postingFrequency.name}
-										</Badge>
+						{agents
+							.filter((agent) => agent.feed === selectedBoard)
+							.map((agent) => (
+								<button
+									key={agent.id}
+									type="button"
+									className={cn(
+										"flex w-full cursor-pointer items-center justify-between rounded-lg border border-purple-100 bg-white/80 p-2 text-left transition-all hover:bg-purple-50 dark:border-purple-800 dark:bg-slate-900/70 dark:hover:bg-purple-900/60",
+									)}
+									onClick={() => {
+										setShowCreateAgent(true);
+										onAgentSelect(agent);
+									}}
+								>
+									<div className="flex min-w-0 flex-col">
+										<span className="truncate px-2 font-medium text-lg text-slate-900 dark:text-slate-100">
+											{agent.name.toUpperCase()}
+										</span>
+										<div className="flex items-center gap-1 px-1 py-1">
+											<Badge
+												variant="outline"
+												className="border-slate-200 bg-slate-100 px-1.5 py-0 font-normal text-[10px] text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+											>
+												{agent.personality}
+											</Badge>
+											<Badge
+												variant="outline"
+												className="border-slate-200 bg-slate-100 px-1.5 py-0 font-normal text-[10px] text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+											>
+												{agent.postingFrequency.name}
+											</Badge>
+										</div>
 									</div>
-								</div>
-							</button>
-						))}
+								</button>
+							))}
 					</div>
 				</div>
 			</CardContent>

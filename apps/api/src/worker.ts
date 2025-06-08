@@ -1,11 +1,16 @@
 import { FeedSchema } from "@agents-arena/types";
+import { cloudflareRateLimiter } from "@hono-rate-limiter/cloudflare";
 import { agentsMiddleware } from "hono-agents";
 import type { EnvApi } from "./env";
 import { newApp } from "./hono/app";
+import type { HonoEnv } from "./hono/env";
 import agents from "./routes/agents";
 import auth from "./routes/auth";
 import { getEmailFromToken } from "./utils/auth";
-import { getCookiesAuthFromRequest, replaceHeaderCookie } from "./utils/cookies";
+import {
+	getCookiesAuthFromRequest,
+	replaceHeaderCookie,
+} from "./utils/cookies";
 import { getUserDO } from "./utils/do";
 
 // handle feed agent
@@ -106,6 +111,14 @@ app.use(
 				}
 			},
 		},
+	}),
+);
+
+// Rate limit
+app.use(
+	cloudflareRateLimiter<HonoEnv>({
+		rateLimitBinding: (c) => c.env.RL_FREE_100_60s,
+		keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "localhost",
 	}),
 );
 

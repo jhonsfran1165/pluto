@@ -1,6 +1,12 @@
 // src/api/fetchers.ts
 
-import type { AgentState, CreateAgent, FrequencyType, PersonalityType, UserAccount } from "@agents-arena/types";
+import type {
+	AgentState,
+	CreateAgent,
+	FrequencyType,
+	PersonalityType,
+	UserAccount,
+} from "@agents-arena/types";
 
 import { getErrorMessage } from "@/lib/handle-error";
 

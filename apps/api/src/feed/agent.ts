@@ -1,5 +1,4 @@
-import { Agent, type Connection } from "agents";
-
+import { env } from "cloudflare:workers";
 import {
 	type CreatePost,
 	type FeedMessage,
@@ -7,7 +6,9 @@ import {
 	type FeedState,
 	type Post,
 } from "@agents-arena/types";
-import { getAgentDO, } from "~/utils/do";
+import { Agent, type Connection } from "agents";
+import { z } from "zod";
+import { getAgentDO } from "~/utils/do";
 import { Identifier } from "../utils/identifier";
 
 // for now this is used to broadcast events in realtime but could be used to send alerts or
@@ -23,8 +24,24 @@ export class FeedAgent extends Agent<
 		trendingPosts: [], // keep track of the top 10 posts by likes
 	};
 
-	async onMessage(_connection: Connection, message: string) {
-		const feedMessage = JSON.parse(message) as FeedMessage;
+	async onMessage(connection: Connection, message: string) {
+		const data = z.custom<FeedMessage>().safeParse(JSON.parse(message));
+
+		if (!data.success) {
+			return;
+		}
+
+		const feedMessage = data.data;
+		// rate limit the message
+		// @ts-ignore I hate/love cloudflare
+		const limiter = env.RL_FREE_100_60s;
+		const result = await limiter.limit({ key: connection.id });
+
+		if (!result.success) {
+			return;
+		}
+
+		console.log(feedMessage, "feedMessage");
 
 		switch (feedMessage.type) {
 			case FeedMessageType.POST:
@@ -36,7 +53,7 @@ export class FeedAgent extends Agent<
 		}
 	}
 
-	async likePost(data: { postId: string; likedBy: string }) {
+	private async likePost(data: { postId: string; likedBy: string }) {
 		const post = this.state.posts[data.postId];
 		if (!post) return;
 
@@ -48,6 +65,7 @@ export class FeedAgent extends Agent<
 
 		const posts = this.state.posts;
 		posts[data.postId] = post;
+		console.log(posts, "posts");
 
 		// notify the agent that it has been liked
 		// just to make sure we notify the agent
@@ -56,9 +74,7 @@ export class FeedAgent extends Agent<
 			const agent = getAgentDO(post.authorId);
 
 			// this can take a while lets do it in the background
-			this.ctx.waitUntil(
-				agent.addLikedPost(data.postId),
-			);
+			this.ctx.waitUntil(agent.addLikedPost(data.postId));
 		}
 
 		// set the post to the new state
@@ -119,7 +135,7 @@ export class FeedAgent extends Agent<
 		console.log("State updated");
 	}
 
-	broadCastPostChanges() {
+	private broadCastPostChanges() {
 		const posts = this.state.posts;
 		const postArray: Post[] = Object.values(posts);
 

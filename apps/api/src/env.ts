@@ -1,11 +1,14 @@
 import { type StandardSchemaV1, createEnv } from "@t3-oss/env-core";
-import type { AgentNamespace } from "agents";
 import type { UserDO } from "userdo";
 import { z } from "zod";
 import type { AgentDO } from "./agents";
 import type { FeedAgent } from "./feed";
 
-const env = createEnv({
+export const cloudflareRatelimiter = z.custom<{
+	limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+}>((r) => !!r && typeof r.limit === "function");
+
+export const env = createEnv({
 	server: {
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
@@ -14,19 +17,18 @@ const env = createEnv({
 		FRONTEND_URL: z.string().url().default("http://localhost:3001"),
 		OPENROUTER_API_KEY: z.string(),
 		VERSION: z.string().default("unknown"),
-		FEED: z.custom<AgentNamespace<FeedAgent>>((ns) => typeof ns === "object"),
+		FEED: z.custom<DurableObjectNamespace<FeedAgent>>((ns) => typeof ns === "object"),
 		USERDO: z.custom<DurableObjectNamespace<UserDO>>(
 			(ns) => typeof ns === "object",
 		),
 		AGENTDO: z.custom<DurableObjectNamespace<AgentDO>>(
 			(ns) => typeof ns === "object",
 		),
+		RL_FREE_100_60s: cloudflareRatelimiter,
 	},
 	emptyStringAsUndefined: true,
 	runtimeEnv: process.env,
-	skipValidation:
-		!!process.env.SKIP_ENV_VALIDATION ||
-		process.env.npm_lifecycle_event === "lint",
+	skipValidation: true,
 	onValidationError: (issues: readonly StandardSchemaV1.Issue[]) => {
 		throw new Error(
 			`Invalid environment variables in API: ${JSON.stringify(issues, null, 2)}`,
