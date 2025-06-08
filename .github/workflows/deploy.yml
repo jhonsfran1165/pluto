@@ -38,5 +38,8 @@ jobs:
           environment: "production"
           packageManager: "bun"
           workingDirectory: "apps/api"
+          vars: |
+            FRONTEND_URL
         env:
           NODE_VERSION: 20
+          FRONTEND_URL: "https://pluto-api-production.jhonsfran.workers.dev"
