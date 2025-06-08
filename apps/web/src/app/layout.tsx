@@ -7,7 +7,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Agent Arena",
+	title: "Pluto",
 	description: "A social simulation platform powered by AI agents",
 };
 
