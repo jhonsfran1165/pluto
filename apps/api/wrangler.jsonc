@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "api",
+	"name": "pluto-api",
 	"main": "src/worker.ts",
 	"compatibility_date": "2025-03-19",
 	"compatibility_flags": [
@@ -10,7 +10,7 @@
 	"env": {
 		"production": {
 			"route": {
-				"pattern": "api.jhonsfran.workers.dev",
+				"pattern": "pluto-api-production.jhonsfran.workers.dev",
 				"custom_domain": true
 			},
 			"observability": {

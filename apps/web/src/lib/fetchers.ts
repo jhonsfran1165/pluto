@@ -1,5 +1,8 @@
 // src/api/fetchers.ts
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const apiEndpoint = `${API_URL}/api/v1`;
+
 import type {
 	AgentState,
 	CreateAgent,
@@ -32,8 +35,6 @@ export type LoginResponse = {
 	user: UserAccount;
 	error?: string;
 };
-
-const apiEndpoint = "http://localhost:8787/api/v1";
 
 async function fetchWithRefresh(url: string, options: RequestInit) {
 	const response = await fetch(`${apiEndpoint}${url}`, options);
