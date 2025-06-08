@@ -14,7 +14,7 @@ export function newApp() {
 	app.use(
 		"*",
 		cors({
-			origin: env.NODE_ENV === "production" ? env.FRONTEND_URL : "http://localhost:3001",
+			origin: env.FRONTEND_URL,
 			allowHeaders: ["Content-Type", "Authorization"],
 			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 			exposeHeaders: ["*"],

@@ -9,10 +9,6 @@
 	],
 	"env": {
 		"production": {
-			"route": {
-				"pattern": "pluto-api-production.jhonsfran.workers.dev",
-				"custom_domain": true
-			},
 			"observability": {
 				"enabled": true
 			},
