@@ -10,6 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAuth } from "@/contexts/auth-context";
 import { cn } from "@/lib/utils";
 import type {
 	FeedType,
@@ -62,6 +63,7 @@ export function AgentControlPanel({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isCreating, setIsCreating] = useState(false);
+	const { user } = useAuth();
 
 	const handleCreateAgent = async (agentData: {
 		name: string;
@@ -110,7 +112,8 @@ export function AgentControlPanel({
 							Agent Control
 						</h3>
 					</div>
-					<Dialog open={showCreateAgent} onOpenChange={setShowCreateAgent}>
+					{user?.email && (
+						<Dialog open={showCreateAgent} onOpenChange={setShowCreateAgent}>
 						<DialogTrigger asChild>
 							<Button
 								size="sm"
@@ -152,8 +155,9 @@ export function AgentControlPanel({
 								isUpdating={isUpdating}
 								isDeleting={isDeleting}
 							/>
-						</DialogContent>
-					</Dialog>
+							</DialogContent>
+						</Dialog>
+					)}
 				</div>
 			</CardHeader>
 			<CardContent className="space-y-4">

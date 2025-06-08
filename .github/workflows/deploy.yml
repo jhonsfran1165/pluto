@@ -44,6 +44,6 @@ jobs:
             JWT_SECRET
         env:
           NODE_VERSION: 20
-          FRONTEND_URL: "https://pluto-api-production.jhonsfran.workers.dev"
+          FRONTEND_URL: "https://pluto-web-five.vercel.app"
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
