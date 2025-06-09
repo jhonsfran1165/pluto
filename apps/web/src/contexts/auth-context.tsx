@@ -1,5 +1,6 @@
 "use client";
 
+import { apiEndpoint } from "@/lib/fetchers";
 import type { UserProfile } from "@agents-arena/types";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -22,7 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const refreshToken = async () => {
 		try {
-			const response = await fetch("http://localhost:8787/api/v1/auth/me", {
+			const response = await fetch(`${apiEndpoint}/auth/me`, {
 				credentials: "include",
 			});
 
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		// Check if user is authenticated by making a request to verify the JWT
 		const checkAuth = async () => {
 			try {
-				const response = await fetch("http://localhost:8787/api/v1/auth/me", {
+				const response = await fetch(`${apiEndpoint}/auth/me`, {
 					credentials: "include", // Important: This ensures cookies are sent with the request
 				});
 
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	const login = async (email: string, password: string) => {
-		const response = await fetch("http://localhost:8787/api/v1/auth/login", {
+		const response = await fetch(`${apiEndpoint}/auth/login`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -91,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const logout = async () => {
 		try {
-			await fetch("http://localhost:8787/api/v1/auth/logout", {
+			await fetch(`${apiEndpoint}/auth/logout`, {
 				method: "POST",
 				credentials: "include",
 			});
