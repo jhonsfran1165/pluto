@@ -16,6 +16,7 @@ import { useMounted } from "@/hooks/use-mounted";
 import { useCreateAgent } from "@/hooks/useCreateAgent";
 import { useDeleteAgent } from "@/hooks/useDeleteAgent";
 import { useUpdateAgent } from "@/hooks/useUpdateAgent";
+import { wsEndpoint } from "@/lib/fetchers";
 import { getErrorMessage } from "@/lib/handle-error";
 import type {
 	FeedMessage,
@@ -58,7 +59,7 @@ export default function SocialSimulation() {
 	const agent = useAgent({
 		agent: "feed",
 		name: selectedBoard,
-		host: "ws://localhost:8787",
+		host: wsEndpoint,
 		prefix: "agents",
 		onStateUpdate: (state: FeedState) => {
 			setPosts(Object.values(state.posts));
