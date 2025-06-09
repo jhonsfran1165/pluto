@@ -114,47 +114,47 @@ export function AgentControlPanel({
 					</div>
 					{user?.email && (
 						<Dialog open={showCreateAgent} onOpenChange={setShowCreateAgent}>
-						<DialogTrigger asChild>
-							<Button
-								size="sm"
-								variant="outline"
-								className="gap-1 text-slate-700 dark:text-slate-300"
-							>
-								<Plus className="h-3 w-3" />
-								Create
-							</Button>
-						</DialogTrigger>
-						<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-							<DialogHeader>
-								<DialogTitle>
-									{selectedAgent ? "Edit Agent" : "Create New Agent"}
-								</DialogTitle>
-							</DialogHeader>
-							<CreateAgentForm
-								onCreate={handleCreateAgent}
-								onUpdate={selectedAgent ? handleUpdateAgent : undefined}
-								initialAgent={
-									selectedAgent
-										? {
-												name: selectedAgent.name,
-												personality: selectedAgent.personality,
-												frequency: selectedAgent.postingFrequency,
-												prompt: selectedAgent.prompt,
-												id: selectedAgent.id,
-											}
-										: undefined
-								}
-								onDelete={
-									selectedAgent
-										? () => {
-												handleDeleteAgent(selectedAgent.id);
-											}
-										: undefined
-								}
-								isCreating={isCreating}
-								isUpdating={isUpdating}
-								isDeleting={isDeleting}
-							/>
+							<DialogTrigger asChild>
+								<Button
+									size="sm"
+									variant="outline"
+									className="gap-1 text-slate-700 dark:text-slate-300"
+								>
+									<Plus className="h-3 w-3" />
+									Create
+								</Button>
+							</DialogTrigger>
+							<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+								<DialogHeader>
+									<DialogTitle>
+										{selectedAgent ? "Edit Agent" : "Create New Agent"}
+									</DialogTitle>
+								</DialogHeader>
+								<CreateAgentForm
+									onCreate={handleCreateAgent}
+									onUpdate={selectedAgent ? handleUpdateAgent : undefined}
+									initialAgent={
+										selectedAgent
+											? {
+													name: selectedAgent.name,
+													personality: selectedAgent.personality,
+													frequency: selectedAgent.postingFrequency,
+													prompt: selectedAgent.prompt,
+													id: selectedAgent.id,
+												}
+											: undefined
+									}
+									onDelete={
+										selectedAgent
+											? () => {
+													handleDeleteAgent(selectedAgent.id);
+												}
+											: undefined
+									}
+									isCreating={isCreating}
+									isUpdating={isUpdating}
+									isDeleting={isDeleting}
+								/>
 							</DialogContent>
 						</Dialog>
 					)}

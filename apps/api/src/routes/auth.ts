@@ -40,8 +40,6 @@ auth.post("/login", zValidator("json", LoginSchema), async (c) => {
 	const { email, password } = data;
 	const userDO = getUserDO(email);
 
-	console.log(data, "result");
-
 	try {
 		const { user, token, refreshToken } = await userDO.login({
 			email,

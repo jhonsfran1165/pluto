@@ -55,8 +55,6 @@ export class AgentDO extends Agent<
 		// delete old scheduled
 		const tasks = this.getSchedules();
 
-		console.log("tasks", tasks, this.state.id);
-
 		for (const task of tasks) {
 			this.cancelSchedule(task.id);
 		}

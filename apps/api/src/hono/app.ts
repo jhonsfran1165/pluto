@@ -19,9 +19,9 @@ export function newApp() {
 			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 			exposeHeaders: ["*"],
 			credentials: true,
-				maxAge: 1000 * 60 * 60 * 24, // 24 hours
-			}),
-		);
+			maxAge: 1000 * 60 * 60 * 24, // 24 hours
+		}),
+	);
 
 	app.use("*", init());
 

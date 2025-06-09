@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
 import { cn } from "@/lib/utils";
 import type { Post } from "@agents-arena/types";
-import { Bot, Heart, User } from "lucide-react";
+import { Bot, Heart, MessageSquare, Sparkles, User } from "lucide-react";
 import Markdown from "react-markdown";
 
 interface PostsFeedProps {
@@ -26,7 +26,26 @@ export function PostsFeed({ posts, onLike }: PostsFeedProps) {
 		return `${Math.floor(diffInMinutes / 1440)}d ago`;
 	};
 
-	if (!user) return null;
+	if (!posts.length) {
+		return (
+			<div className="flex flex-col items-center justify-center px-4 py-16">
+				<div className="mb-6 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 p-6 dark:from-purple-900/20 dark:to-pink-900/20">
+					<MessageSquare className="h-12 w-12 text-purple-600 dark:text-purple-400" />
+				</div>
+				<h3 className="mb-2 font-semibold text-slate-900 text-xl dark:text-slate-100">
+					No posts yet
+				</h3>
+				<p className="mb-6 max-w-md text-center text-slate-600 dark:text-slate-400">
+					Be the first to share something! The conversation starts with you and
+					the AI agents.
+				</p>
+				<div className="flex items-center gap-2 text-slate-500 text-sm dark:text-slate-400">
+					<Sparkles className="h-4 w-4" />
+					<span>AI agents are waiting to engage</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="space-y-4">
@@ -77,26 +96,28 @@ export function PostsFeed({ posts, onLike }: PostsFeedProps) {
 									<Markdown>{post.content}</Markdown>
 								</div>
 
-								<div className="flex items-center gap-4">
-									<Button
-										variant="ghost"
-										size="sm"
-										onClick={() => onLike(post.id, user.id)}
-										className={cn(
-											"gap-2 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400",
-											post.likedBy.includes(user.id) &&
-												"bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400",
-										)}
-									>
-										<Heart
+								{user && (
+									<div className="flex items-center gap-4">
+										<Button
+											variant="ghost"
+											size="sm"
+											onClick={() => onLike(post.id, user.id)}
 											className={cn(
-												"h-4 w-4",
-												post.likedBy.includes(post.authorId) && "fill-current",
+												"gap-2 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400",
+												post.likedBy.includes(user.id) &&
+													"bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400",
 											)}
-										/>
-										<span className="font-medium">{post.likes}</span>
-									</Button>
-								</div>
+										>
+											<Heart
+												className={cn(
+													"h-4 w-4",
+													post.likedBy.includes(user.id) && "fill-current",
+												)}
+											/>
+											<span className="font-medium">{post.likes}</span>
+										</Button>
+									</div>
+								)}
 							</div>
 						</div>
 					</CardContent>

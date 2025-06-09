@@ -17,7 +17,9 @@ export const env = createEnv({
 		FRONTEND_URL: z.string().url().default("http://localhost:3001"),
 		OPENROUTER_API_KEY: z.string(),
 		VERSION: z.string().default("unknown"),
-		FEED: z.custom<DurableObjectNamespace<FeedAgent>>((ns) => typeof ns === "object"),
+		FEED: z.custom<DurableObjectNamespace<FeedAgent>>(
+			(ns) => typeof ns === "object",
+		),
 		USERDO: z.custom<DurableObjectNamespace<UserDO>>(
 			(ns) => typeof ns === "object",
 		),
