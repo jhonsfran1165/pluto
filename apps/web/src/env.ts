@@ -11,7 +11,7 @@ export const env = createEnv({
   },
   clientPrefix: "NEXT_PUBLIC_",
   client: {
-    NEXT_PUBLIC_API_URL: z.string(),
+    NEXT_PUBLIC_API_URL: z.string().url(),
   },
   onValidationError: (issues: readonly StandardSchemaV1.Issue[]) => {
     console.error("❌ Invalid environment variables in NextJS:", issues)

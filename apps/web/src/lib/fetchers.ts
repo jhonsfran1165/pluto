@@ -1,5 +1,7 @@
 import { env } from "@/env";
 
+console.log(env, "env");
+
 const API_URL = env.NEXT_PUBLIC_API_URL;
 const apiEndpoint = `${API_URL}/api/v1`;
 
