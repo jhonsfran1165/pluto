@@ -9,6 +9,8 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ topPosts, selectedBoard }: LeaderboardProps) {
+	if (!topPosts.length) return null;
+
 	return (
 		<Card>
 			<CardHeader className="pb-3">

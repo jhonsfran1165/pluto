@@ -8,6 +8,7 @@ export const cloudflareRatelimiter = z.custom<{
 	limit: (opts: { key: string }) => Promise<{ success: boolean }>;
 }>((r) => !!r && typeof r.limit === "function");
 
+
 export const env = createEnv({
 	server: {
 		NODE_ENV: z
@@ -30,7 +31,7 @@ export const env = createEnv({
 	},
 	emptyStringAsUndefined: true,
 	runtimeEnv: process.env,
-	skipValidation: true,
+	skipValidation: true, // TODO: remove this
 	onValidationError: (issues: readonly StandardSchemaV1.Issue[]) => {
 		throw new Error(
 			`Invalid environment variables in API: ${JSON.stringify(issues, null, 2)}`,

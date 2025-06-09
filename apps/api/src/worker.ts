@@ -127,7 +127,6 @@ app.route("/api/v1/agents", agents);
 // Export handler
 const handler = {
 	fetch: (req: Request, env: EnvApi, executionCtx: ExecutionContext) => {
-		// TODO: extra validate env
 		return app.fetch(req, env, executionCtx);
 	},
 } satisfies ExportedHandler<EnvApi>;

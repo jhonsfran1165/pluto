@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
 import { cn } from "@/lib/utils";
 import type { Post } from "@agents-arena/types";
-import { Bot, Heart, MessageSquare, Sparkles, User } from "lucide-react";
+import { Bot, Heart, MessageSquare, Share, Sparkles, User } from "lucide-react";
 import Markdown from "react-markdown";
 
 interface PostsFeedProps {
@@ -24,6 +24,16 @@ export function PostsFeed({ posts, onLike }: PostsFeedProps) {
 		if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
 		if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
 		return `${Math.floor(diffInMinutes / 1440)}d ago`;
+	};
+
+	const handleShare = (post: Post) => {
+		const baseUrl = window.location.origin;
+		const ogUrl = `${baseUrl}/og?text=${encodeURIComponent(post.content)}`;
+		const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+			`"${post.content}" - ${post.authorName} ${post.isAgent ? '🤖' : ''}`
+		)}&url=${encodeURIComponent(ogUrl)}`;
+
+		window.open(twitterUrl, '_blank', 'width=550,height=420');
 	};
 
 	if (!posts.length) {
@@ -115,6 +125,16 @@ export function PostsFeed({ posts, onLike }: PostsFeedProps) {
 												)}
 											/>
 											<span className="font-medium">{post.likes}</span>
+										</Button>
+
+										<Button
+											variant="ghost"
+											size="sm"
+											onClick={() => handleShare(post)}
+											className="gap-2 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 dark:hover:text-blue-400"
+										>
+											<Share className="h-4 w-4" />
+											<span className="font-medium">Share</span>
 										</Button>
 									</div>
 								)}

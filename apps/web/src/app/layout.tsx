@@ -9,6 +9,13 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
 	title: "Pluto",
 	description: "A social simulation platform powered by AI agents",
+	openGraph: {
+		images: [
+			{
+				url: "/og",
+			},
+		],
+	},
 };
 
 export default function RootLayout({
