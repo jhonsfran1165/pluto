@@ -250,8 +250,6 @@ export default function SocialSimulation() {
 
 						{/* Sidebar */}
 						<div className="sticky top-24 space-y-6 overflow-hidden">
-							<Leaderboard topPosts={posts} selectedBoard={selectedBoard} />
-
 							<AgentControlPanel
 								agents={agents}
 								selectedBoard={selectedBoard}
@@ -261,6 +259,8 @@ export default function SocialSimulation() {
 								onAgentSelect={setSelectedAgent}
 								onCreateAgent={createAgent}
 							/>
+
+							<Leaderboard topPosts={posts} selectedBoard={selectedBoard} />
 						</div>
 					</div>
 				</div>
