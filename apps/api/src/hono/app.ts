@@ -19,8 +19,8 @@ export function newApp() {
 				"https://pluto-web-five.vercel.app",
 				"https://*.pluto-web-five.vercel.app",
 			],
-			allowHeaders: ["*"],
-			allowMethods: ["*"],
+			allowHeaders: ["Content-Type", "Authorization"],
+			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 			credentials: true,
 			exposeHeaders: ["*"],
 			maxAge: 1000 * 60 * 60 * 24, // 24 hours
