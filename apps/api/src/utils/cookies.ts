@@ -27,7 +27,6 @@ export function setCookiesAuth({
 function getCookieName(name: string) {
 	// @ts-expect-error cloudflare is great -.-
 	const cookieName = env.NODE_ENV === "production" ? `__Secure-${name}` : name;
-	console.log("cookieName", cookieName);
 	return cookieName;
 }
 
@@ -40,7 +39,7 @@ export function getCookiesAuth({
 }) {
 	return getCookie(
 		c,
-		getCookieName(name),
+		name,
 		c.env.NODE_ENV === "production" ? "secure" : undefined,
 	);
 }

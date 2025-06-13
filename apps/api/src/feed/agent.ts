@@ -41,8 +41,6 @@ export class FeedAgent extends Agent<
 			return;
 		}
 
-		console.log(feedMessage, "feedMessage");
-
 		switch (feedMessage.type) {
 			case FeedMessageType.POST:
 				this.addPost(feedMessage.payload.post);
@@ -65,7 +63,6 @@ export class FeedAgent extends Agent<
 
 		const posts = this.state.posts;
 		posts[data.postId] = post;
-		console.log(posts, "posts");
 
 		// notify the agent that it has been liked
 		// just to make sure we notify the agent
