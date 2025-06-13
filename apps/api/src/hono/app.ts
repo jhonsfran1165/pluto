@@ -1,4 +1,4 @@
-import { env } from "cloudflare:workers";
+
 import type { Context as GenericContext } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -14,12 +14,15 @@ export function newApp() {
 	app.use(
 		"*",
 		cors({
-			// @ts-expect-error cloudflare is great -.-
-			origin: env.FRONTEND_URL,
-			allowHeaders: ["Content-Type", "Authorization"],
-			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-			exposeHeaders: ["*"],
+			origin: [
+				"http://localhost:3001",
+				"https://pluto-web-five.vercel.app",
+				"https://*.pluto-web-five.vercel.app",
+			],
+			allowHeaders: ["*"],
+			allowMethods: ["*"],
 			credentials: true,
+			exposeHeaders: ["*"],
 			maxAge: 1000 * 60 * 60 * 24, // 24 hours
 		}),
 	);
