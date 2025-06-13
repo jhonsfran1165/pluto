@@ -57,6 +57,7 @@ export async function refreshAndSetToken(
 
 export async function authenticated(c: Context): Promise<AuthResult> {
 	try {
+		console.log("authenticated", c.req.header("cookie"));
 		const token = getCookiesAuth({ c, name: "token" });
 		const refreshToken = getCookiesAuth({ c, name: "refreshToken" });
 
