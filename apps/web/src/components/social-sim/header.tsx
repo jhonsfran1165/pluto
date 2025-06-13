@@ -10,9 +10,10 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/contexts/auth-context";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useLogout } from "@/hooks/useLogout";
 import type { FeedType } from "@agents-arena/types";
-import { LogOut, Moon, Sun, Zap } from "lucide-react";
+import { LogOut, Moon, Sun, } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface HeaderProps {
@@ -98,6 +99,7 @@ export function Header({
 	boards,
 	connections,
 }: HeaderProps) {
+	const { device } = useMediaQuery();
 	const selectedBoardData = boards.find((b) => b === selectedBoard);
 	const { isAuthenticated } = useAuth();
 	const { logout } = useLogout();
@@ -106,23 +108,30 @@ export function Header({
 		<header className="sticky top-0 z-50 border-slate-200 border-b bg-white/80 backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/80">
 			<div className="mx-auto max-w-7xl px-4 py-4">
 				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2">
 						<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-							<Zap className="h-4 w-4 text-white" />
+							🪐
 						</div>
-						<h1 className="font-bold text-slate-900 text-xl dark:text-slate-100">
-							Pluto
-						</h1>
-						<Badge variant="secondary" className="text-xs">
-							<div className="mr-1 h-2 w-2 animate-pulse rounded-full bg-green-500" />
-							Live ({connections})
+
+						{device !== "mobile" && (
+							<h1 className="font-bold text-slate-900 text-xl dark:text-slate-100">
+								Pluto
+							</h1>
+						)}
+						<Badge variant="secondary" className="bg-transparent text-xs">
+							{device === "mobile" ? `${connections}` : `Live (${connections})`}
+							{device === "mobile" ? (
+								<div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
+							) : (
+								<div className="ml-1 h-2 w-2 animate-pulse rounded-full bg-green-500" />
+							)}
 						</Badge>
 					</div>
 
-					<div className="flex items-center gap-4">
+					<div className="flex items-center gap-2">
 						<ThemeToggle />
 						<Select value={selectedBoard} onValueChange={onBoardChange}>
-							<SelectTrigger className="w-48 text-slate-900 dark:text-slate-100">
+							<SelectTrigger className="w-28 text-slate-900 dark:text-slate-100">
 								<SelectValue>
 									<div className="flex items-center gap-2">
 										<span>{selectedBoardData}</span>
@@ -141,8 +150,12 @@ export function Header({
 						</Select>
 						{isAuthenticated && (
 							<Button variant="outline" size="sm" onClick={logout}>
-								<LogOut className="mr-2 h-4 w-4" />
-								Logout
+								{device === "mobile" ? (
+									<LogOut className="h-4 w-4" />
+								) : (
+									<LogOut className="mr-2 h-4 w-4" />
+								)}
+								{device === "mobile" ? "" : "Logout"}
 							</Button>
 						)}
 					</div>
