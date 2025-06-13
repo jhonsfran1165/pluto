@@ -1,8 +1,8 @@
+import { env } from "cloudflare:workers";
 import type { Context as GenericContext } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";
-import { env } from "~/env";
 import { init } from "../middleware/init";
 import type { HonoEnv } from "./env";
 
@@ -14,6 +14,7 @@ export function newApp() {
 	app.use(
 		"*",
 		cors({
+			// @ts-expect-error cloudflare is great -.-
 			origin: env.FRONTEND_URL,
 			allowHeaders: ["Content-Type", "Authorization"],
 			allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
