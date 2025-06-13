@@ -1,6 +1,6 @@
+import { env } from "cloudflare:workers";
 import type { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
-import { env } from "~/env";
 
 export function setCookiesAuth({
 	c,
@@ -21,11 +21,13 @@ export function setCookiesAuth({
 		// let's set expiration 30 days from now in UTC
 		maxAge: 60 * 60 * 24 * 30,
 		prefix: c.env.NODE_ENV === "production" ? "secure" : undefined,
+		// @ts-expect-error cloudflare is great -.-
 		domain: c.env.NODE_ENV === "production" ? env.FRONTEND_URL : undefined,
 	});
 }
 
 function getCookieName(name: string) {
+	// @ts-expect-error cloudflare is great -.-
 	const isCookieSecure = env.NODE_ENV === "production";
 	const cookieName = isCookieSecure ? "Secure__" : "";
 	return `${cookieName}${name}`;
