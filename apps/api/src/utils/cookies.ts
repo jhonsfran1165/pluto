@@ -17,7 +17,7 @@ export function setCookiesAuth({
 		httpOnly: c.env.NODE_ENV === "production",
 		secure: c.env.NODE_ENV === "production",
 		path: "/",
-		sameSite: "Lax", // frontend can access the cookie
+		sameSite: c.env.NODE_ENV === "production" ? "None" : "Lax", // frontend can access the cookie
 		// let's set expiration 30 days from now in UTC
 		maxAge: 60 * 60 * 24 * 30,
 		prefix: c.env.NODE_ENV === "production" ? "secure" : undefined,
@@ -43,6 +43,7 @@ export function getCookiesAuth({
 	return getCookie(
 		c,
 		getCookieName(name),
+		// @ts-expect-error cloudflare is great -.-
 		env.NODE_ENV === "production" ? "secure" : undefined,
 	);
 }
