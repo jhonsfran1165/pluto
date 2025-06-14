@@ -59,6 +59,8 @@ export class AgentDO extends Agent<
 			this.cancelSchedule(task.id);
 		}
 
+		console.log("scheduling tasks", tasks, this.state.postingFrequency.cron);
+
 		// schedule the task to add a post given the frequency
 		await this.schedule(this.state.postingFrequency.cron, "addPost");
 	}

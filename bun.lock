@@ -16,7 +16,7 @@
         "@hono/zod-validator": "^0.6.0",
         "@openrouter/ai-sdk-provider": "^0.6.0",
         "@t3-oss/env-core": "^0.13.4",
-        "agents": "^0.0.94",
+        "agents": "^0.0.95",
         "ai": "^4.3.16",
         "hono": "^4.7.10",
         "hono-agents": "^0.0.83",
@@ -44,7 +44,7 @@
         "@radix-ui/react-slot": "^1.2.3",
         "@t3-oss/env-core": "^0.13.6",
         "@vercel/og": "^0.6.3",
-        "agents": "^0.0.94",
+        "agents": "^0.0.95",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "lucide-react": "^0.487.0",
@@ -472,7 +472,7 @@
 
     "acorn-walk": ["acorn-walk@8.3.2", "", {}, "sha512-cjkyv4OtNCIeqhHrfS81QWXoCBPExR/J62oyEqepVw8WaQeSqpW2uhuLPh1m9eWhDuOo/jUXVTlifvesOWp/4A=="],
 
-    "agents": ["agents@0.0.94", "", { "dependencies": { "@modelcontextprotocol/sdk": "^1.12.0", "ai": "^4.3.16", "cron-schedule": "^5.0.4", "nanoid": "^5.1.5", "partyserver": "^0.0.71", "partysocket": "1.1.4", "zod": "^3.25.28" }, "peerDependencies": { "react": "*" } }, "sha512-mY0CaX4WTYEdc+u38t3dZC78JfQ6J+VqrMCRICoE2ZMwmoIkG6gprLV8adZpSfd54Gm/gy21Jo0hPHQCGoqy8g=="],
+    "agents": ["agents@0.0.95", "", { "dependencies": { "@modelcontextprotocol/sdk": "^1.12.0", "ai": "^4.3.16", "cron-schedule": "^5.0.4", "nanoid": "^5.1.5", "partyserver": "^0.0.71", "partysocket": "1.1.4", "zod": "^3.25.28" }, "peerDependencies": { "react": "*" } }, "sha512-qj0GVnoyjhj9gGgulShlMYvF6xDI2PpmeE7rpFCWkLxbeJPecUwmDU9Vm7F8ub9Yt58zieA3F0zASx/Z50aYhA=="],
 
     "ai": ["ai@4.3.16", "", { "dependencies": { "@ai-sdk/provider": "1.1.3", "@ai-sdk/provider-utils": "2.2.8", "@ai-sdk/react": "1.2.12", "@ai-sdk/ui-utils": "1.2.11", "@opentelemetry/api": "1.9.0", "jsondiffpatch": "0.6.0" }, "peerDependencies": { "react": "^18 || ^19 || ^19.0.0-rc", "zod": "^3.23.8" }, "optionalPeers": ["react"] }, "sha512-KUDwlThJ5tr2Vw0A1ZkbDKNME3wzWhuVfAOwIvFUzl1TPVDFAXDFTXio3p+jaKneB+dKNCvFFlolYmmgHttG1g=="],
 
@@ -1229,6 +1229,8 @@
     "get-source/source-map": ["source-map@0.6.1", "", {}, "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="],
 
     "hast-util-to-jsx-runtime/@types/estree": ["@types/estree@1.0.8", "", {}, "sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w=="],
+
+    "hono-agents/agents": ["agents@0.0.94", "", { "dependencies": { "@modelcontextprotocol/sdk": "^1.12.0", "ai": "^4.3.16", "cron-schedule": "^5.0.4", "nanoid": "^5.1.5", "partyserver": "^0.0.71", "partysocket": "1.1.4", "zod": "^3.25.28" }, "peerDependencies": { "react": "*" } }, "sha512-mY0CaX4WTYEdc+u38t3dZC78JfQ6J+VqrMCRICoE2ZMwmoIkG6gprLV8adZpSfd54Gm/gy21Jo0hPHQCGoqy8g=="],
 
     "http-errors/statuses": ["statuses@2.0.1", "", {}, "sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ=="],
 
